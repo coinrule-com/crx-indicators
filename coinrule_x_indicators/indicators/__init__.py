@@ -11,11 +11,12 @@ from .price import Price
 from .donchian import DonchianChannels
 from .liquidation_price import LiquidationPrice
 from .unrealized_profit import UnrealizedProfit
+from .market_cap import MarketCap
 from .webhook_signal import WebhookSignal
 
 __all__ = [
     "RSI", "RSISMA", "SMA", "EMA", "VolumeSMA",
     "BollingerBands", "ATR", "ADX", "Candle", "Price",
     "DonchianChannels", "LiquidationPrice", "UnrealizedProfit",
-    "WebhookSignal"
+    "MarketCap", "WebhookSignal"
 ]

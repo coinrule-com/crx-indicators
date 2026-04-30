@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-04-30
+
+### Added
+
+- **Market Cap**: Metric indicator holding the externally-provided market capitalization (USD) for an asset. Useful for filtering trading universes (e.g. excluding low-cap assets).
+
 ## [1.0.0] - 2026-01-06
 
 ### Added

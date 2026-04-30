@@ -141,6 +141,13 @@ indicators:
       "1.0.0":
         class: "coinrule_x_indicators.indicators.liquidation_price.LiquidationPrice"
         description: "Position Liquidation Price"
+  market_cap:
+    latest: "1.0.0"
+    label: "Market Cap"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.market_cap.MarketCap"
+        description: "Asset Market Capitalization (USD)"
   webhook_signal:
     latest: "1.0.0"
     label: "Webhook Signal"
