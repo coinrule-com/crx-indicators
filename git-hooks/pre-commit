@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# Auto-bump [project].version minor (1.2.0 -> 1.3.0) when package sources change
+# but pyproject.toml was not manually version-bumped vs HEAD.
+#
+# Install (from git repo root):
+#   bash crx-indicators/scripts/install-git-hooks.sh
+# Or standalone crx-indicators clone:
+#   bash scripts/install-git-hooks.sh
+
+set -euo pipefail
+
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+
+HOOKS_REL=$(git -C "$REPO_ROOT" config --get core.hooksPath 2>/dev/null) || exit 0
+[[ -n "$HOOKS_REL" ]] || exit 0
+if [[ "$HOOKS_REL" == /* ]]; then
+  HOOK_DIR="$HOOKS_REL"
+else
+  HOOK_DIR="$REPO_ROOT/$HOOKS_REL"
+fi
+IND_ROOT=$(dirname "$HOOK_DIR")
+PYPROJECT="$IND_ROOT/pyproject.toml"
+[[ -f "$PYPROJECT" ]] || exit 0
+
+# Only run for this package's pyproject.toml
+if ! grep -q '^name = "crx-indicators"' "$PYPROJECT" 2>/dev/null; then
+  exit 0
+fi
+
+REL_IND=$(python3 -c "import os; print(os.path.relpath(os.path.abspath('$IND_ROOT'), os.path.abspath('$REPO_ROOT')))")
+
+prefix=""
+[[ "$REL_IND" != "." ]] && prefix="${REL_IND}/"
+
+version_in_git_object() {
+  git -C "$REPO_ROOT" show "$1" 2>/dev/null | python3 -c "
+import re, sys
+m = re.search(r'^version\s*=\s*\"([^\"]+)\"', sys.stdin.read(), re.MULTILINE)
+print(m.group(1) if m else '', end='')
+" 2>/dev/null || true
+}
+
+bump_minor_reset_patch() {
+  python3 -c '
+import re, sys
+v = sys.argv[1].strip()
+m = re.match(r"^(\d+)\.(\d+)\.(\d+)$", v)
+if not m:
+    print(v, end="")
+    sys.exit(0)
+maj, mn = m.group(1), int(m.group(2))
+print("{}.{}.0".format(maj, mn + 1), end="")
+' "$1"
+}
+
+needs_bump=false
+while IFS= read -r f; do
+  [[ -n "$f" ]] || continue
+  case "$f" in
+    "${prefix}"coinrule_x_indicators/*)
+      needs_bump=true
+      break
+      ;;
+    "${prefix}"pyproject.toml)
+      needs_bump=true
+      break
+      ;;
+  esac
+done < <(git -C "$REPO_ROOT" diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)
+
+[[ "$needs_bump" == true ]] || exit 0
+
+index_spec=":${prefix}pyproject.toml"
+head_spec="HEAD:${prefix}pyproject.toml"
+add_path="${prefix}pyproject.toml"
+
+ver_index=$(version_in_git_object "$index_spec")
+[[ -n "$ver_index" ]] || exit 0
+
+ver_head=$(version_in_git_object "$head_spec")
+[[ -n "$ver_head" ]] || exit 0
+
+# Author already bumped version in this commit
+[[ "$ver_index" == "$ver_head" ]] || exit 0
+
+new_ver=$(bump_minor_reset_patch "$ver_index")
+
+python3 -c "
+import pathlib, re, sys
+path = pathlib.Path(sys.argv[1])
+new_v = sys.argv[2]
+text = path.read_text()
+out, n = re.subn(
+    r'^(version\s*=\s*)\"([^\"]+)\"',
+    lambda m: m.group(1) + '\"' + new_v + '\"',
+    text,
+    count=1,
+    flags=re.MULTILINE,
+)
+if n != 1:
+    sys.stderr.write('crx-indicators hook: could not find [project].version in pyproject.toml\n')
+    sys.exit(1)
+path.write_text(out)
+" "$PYPROJECT" "$new_ver"
+
+git -C "$REPO_ROOT" add -- "$add_path"
+echo "crx-indicators: bumped pyproject version $ver_index -> $new_ver (minor) for this commit." >&2
+exit 0

@@ -41,6 +41,24 @@ Each indicator implements the standard interface `CandleIndicator` defined in `c
 
 ## Contributing
 
+### Git hooks (release version)
+
+This repo ships a `pre-commit` hook that **bumps the semver minor** in `pyproject.toml` (e.g. `1.2.0` → `1.3.0`) when you commit changes under `coinrule_x_indicators/` or to `pyproject.toml` itself, but the version line was left unchanged from `HEAD`. If you already bumped the version in the same commit, the hook does nothing.
+
+One-time setup (from the **git repository root** — monorepo root or this repo’s root):
+
+```bash
+bash crx-indicators/scripts/install-git-hooks.sh
+```
+
+For a **standalone** clone of `crx-indicators` only:
+
+```bash
+bash scripts/install-git-hooks.sh
+```
+
+This sets `git config core.hooksPath` to the `git-hooks` directory next to `pyproject.toml`. If your team uses another `core.hooksPath`, merge this `pre-commit` into that system instead of overwriting the config.
+
 We welcome contributions of new indicators! Please follow these guidelines to ensure consistency and quality.
 
 ### Adding a New Indicator
