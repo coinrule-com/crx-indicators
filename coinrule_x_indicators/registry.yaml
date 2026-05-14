@@ -57,6 +57,29 @@ indicators:
             default: 9
             label: "Length"
             description: "Exponential Moving Average period"
+  macd:
+    latest: "1.0.0"
+    label: "MACD"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.macd.MACD"
+        description: "Moving Average Convergence Divergence"
+        arguments:
+          fast:
+            type: int
+            default: 12
+            label: "Fast length"
+            description: "Fast EMA period"
+          slow:
+            type: int
+            default: 26
+            label: "Slow length"
+            description: "Slow EMA period"
+          signal:
+            type: int
+            default: 9
+            label: "Signal length"
+            description: "Signal line EMA period"
   volume_sma:
     latest: "1.0.0"
     label: "Volume SMA"

@@ -6,17 +6,19 @@ from .indicators.ema import EMA
 from .indicators.volume_sma import VolumeSMA
 from .indicators.bb import BollingerBands
 from .indicators.atr import ATR
+from .indicators.macd import MACD
 from .indicators.adx import ADX
 from .indicators.candle import Candle
 from .indicators.price import Price
 from .indicators.donchian import DonchianChannels
 from .indicators.liquidation_price import LiquidationPrice
 from .indicators.unrealized_profit import UnrealizedProfit
+from .indicators.market_cap import MarketCap
 from .indicators.webhook_signal import WebhookSignal
 
 __all__ = [
     "CandleData", "Indicator", "CandleIndicator", "MetricIndicator", "CustomSignalIndicator",
     "RSI", "RSISMA", "SMA", "EMA", "VolumeSMA", "BollingerBands",
-    "ATR", "ADX", "Candle", "Price", "DonchianChannels",
-    "LiquidationPrice", "UnrealizedProfit", "WebhookSignal"
+    "ATR", "MACD", "ADX", "Candle", "Price", "DonchianChannels",
+    "LiquidationPrice", "UnrealizedProfit", "MarketCap", "WebhookSignal"
 ]

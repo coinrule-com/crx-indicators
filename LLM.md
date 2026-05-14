@@ -89,6 +89,43 @@ class MySignalIndicator(CustomSignalIndicator):
 
 ## Available Indicators
 
+Import concrete indicators from the package root:
+
+```python
+from coinrule_x_indicators import (
+    RSI, RSISMA, SMA, EMA, MACD, VolumeSMA,
+    BollingerBands, ATR, ADX, DonchianChannels,
+    Candle, Price,
+    LiquidationPrice, UnrealizedProfit, MarketCap,
+    WebhookSignal,
+)
+```
+
+Base types (for custom indicators or typing): `CandleData`, `Indicator`, `CandleIndicator`, `MetricIndicator`, `CustomSignalIndicator` from `coinrule_x_indicators.core`.
+
+### Complete inventory
+
+| Class | Base | Default / key args | `.value` return type |
+|-------|------|--------------------|----------------------|
+| **SMA** | CandleIndicator | `period=9` | `float` |
+| **EMA** | CandleIndicator | `period=9` | `float` |
+| **RSI** | CandleIndicator | `period=14` | `float` (0–100) |
+| **RSISMA** | CandleIndicator | `rsi_period=14`, `sma_period=14` | `float` (SMA of RSI) |
+| **MACD** | CandleIndicator | `fast=12`, `slow=26`, `signal=9` | `Dict`: `macd`, `signal`, `histogram` |
+| **ADX** | CandleIndicator | `period=14` | `Dict`: `adx`, `plus_di`, `minus_di` |
+| **BollingerBands** | CandleIndicator | `period=20`, `std_dev=2.0` | `Dict`: `upper`, `middle`, `lower`, `percent_b`, `bandwidth` |
+| **ATR** | CandleIndicator | `period=14` | `float` |
+| **DonchianChannels** | CandleIndicator | `period=20` | `Dict`: `upper`, `middle`, `lower` |
+| **Price** | CandleIndicator | — | `float` (latest close) |
+| **Candle** | CandleIndicator | `field="close"` | `float` (`open` \| `high` \| `low` \| `close` \| `volume`) |
+| **VolumeSMA** | CandleIndicator | `period=20` | `float` |
+| **LiquidationPrice** | MetricIndicator | — | `float` (set via `set_value`) |
+| **UnrealizedProfit** | MetricIndicator | — | `float` (set via `set_value`) |
+| **MarketCap** | MetricIndicator | — | `float` USD (set via `set_value`) |
+| **WebhookSignal** | CustomSignalIndicator | — | `Dict[str, str]` on `.signal` / `.value` |
+
+If an indicator is not listed here, **do not** import it from `coinrule_x_indicators` — implement a custom `CandleIndicator` or combine existing ones.
+
 ### Trend Indicators
 
 #### SMA (Simple Moving Average)
@@ -99,7 +136,7 @@ Calculates the arithmetic mean of prices over a specified period.
 
 **Parameters:**
 
-- `period` (int, default=20): Lookback period
+- `period` (int, default=9): Lookback period
 
 **Returns:** `float` - The simple moving average value
 
@@ -124,7 +161,7 @@ Calculates exponentially weighted moving average, giving more weight to recent p
 
 **Parameters:**
 
-- `period` (int, default=20): Lookback period
+- `period` (int, default=9): Lookback period
 
 **Returns:** `float` - The exponential moving average value
 
@@ -177,26 +214,56 @@ if rsi.value < 30:
 
 **Import:** `from coinrule_x_indicators import RSISMA`
 
-Combines RSI with a simple moving average of RSI for smoothed momentum signals.
+Combines RSI with a simple moving average applied to the RSI series (smoothed RSI).
 
 **Parameters:**
 
 - `rsi_period` (int, default=14): RSI calculation period
-- `sma_period` (int, default=14): SMA smoothing period on RSI
+- `sma_period` (int, default=14): SMA period applied to the RSI series
 
-**Returns:** `Dict[str, float]`
-
-- `rsi`: Current RSI value
-- `rsi_sma`: SMA of RSI values
+**Returns:** `float` - SMA of RSI at the latest candle (not a dict)
 
 **Usage:**
 
 ```python
 rsi_sma = RSISMA(rsi_period=14, sma_period=9)
+rsi = RSI(period=14)
 
-# Strategy example: RSI crossing its moving average
-if rsi_sma.value["rsi"] > rsi_sma.value["rsi_sma"]:
-    # Momentum accelerating upward
+# Strategy example: smoothed RSI vs raw RSI
+if rsi.value > rsi_sma.value:
+    # Raw RSI above its short-term average (momentum building)
+```
+
+---
+
+#### MACD (Moving Average Convergence Divergence)
+
+**Import:** `from coinrule_x_indicators import MACD`
+
+MACD line is the difference between fast and slow EMAs of close; the signal line is an EMA of the MACD line; histogram is MACD minus signal. Uses pandas `ewm(span=…, adjust=False)` (common convention).
+
+**Parameters:**
+
+- `fast` (int, default=12): Fast EMA period (must be **less than** `slow`)
+- `slow` (int, default=26): Slow EMA period
+- `signal` (int, default=9): Signal line EMA period
+
+**Returns:** `Dict[str, float]`
+
+- `macd`: MACD line (fast EMA − slow EMA of close)
+- `signal`: EMA of the MACD line
+- `histogram`: `macd` − `signal`
+
+**Notes:** With insufficient candles or non-finite values, components return **0.0**. `fast >= slow` raises `ValueError`.
+
+**Usage:**
+
+```python
+macd = MACD(fast=12, slow=26, signal=9)
+
+# Strategy example: bullish cross
+if macd.value["macd"] > macd.value["signal"] and macd.value["histogram"] > 0:
+    # MACD above signal with positive histogram
 ```
 
 ---
@@ -451,6 +518,30 @@ unrealized_pnl = UnrealizedProfit()
 # Strategy example: Trailing take-profit
 # Note: Value is set externally via unrealized_pnl.set_value(pnl)
 # In strategies, you can use this for conditional exits
+```
+
+---
+
+#### MarketCap
+
+**Import:** `from coinrule_x_indicators import MarketCap`
+
+Holds the asset’s market capitalization in USD (externally provided), useful for universe filters (e.g. minimum cap).
+
+**Parameters:** None
+
+**Returns:** `float` - Market cap in USD
+
+**Usage:**
+
+```python
+market_cap = MarketCap()
+
+# Note: Value is set externally via market_cap.set_value(usd_cap)
+# Example: skip very small caps once value is populated
+if market_cap.value and market_cap.value < 10_000_000:
+    # Below $10M — optional filter
+    pass
 ```
 
 ---
