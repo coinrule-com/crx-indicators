@@ -23,3 +23,10 @@ class Candle(CandleIndicator):
         self._value = float(getattr(candle, self.field))
         self._initialized = True
         return self._value
+
+
+class Volume(Candle):
+    """Latest closed-candle volume; same as ``Candle(field='volume')``."""
+
+    def __init__(self) -> None:
+        super().__init__(field="volume")

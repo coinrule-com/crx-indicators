@@ -1,5 +1,5 @@
 import pytest
-from coinrule_x_indicators.indicators.candle import Candle
+from coinrule_x_indicators.indicators.candle import Candle, Volume
 from tests.utils import load_candles
 
 def test_candle_indicator():
@@ -12,6 +12,10 @@ def test_candle_indicator():
     # Test volume field
     ind_vol = Candle(field="volume")
     assert ind_vol.calculate(candles) == candles[-1].volume
+
+    ind_volume = Volume()
+    assert ind_volume.calculate(candles) == candles[-1].volume
+    assert Volume().update(candles[-1]) == candles[-1].volume
     
     # Test update
     val = ind_close.update(candles[-1])

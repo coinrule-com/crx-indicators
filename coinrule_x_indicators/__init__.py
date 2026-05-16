@@ -8,7 +8,7 @@ from .indicators.bb import BollingerBands
 from .indicators.atr import ATR
 from .indicators.macd import MACD
 from .indicators.adx import ADX
-from .indicators.candle import Candle
+from .indicators.candle import Candle, Volume
 from .indicators.price import Price
 from .indicators.donchian import DonchianChannels
 from .indicators.liquidation_price import LiquidationPrice
@@ -19,6 +19,6 @@ from .indicators.webhook_signal import WebhookSignal
 __all__ = [
     "CandleData", "Indicator", "CandleIndicator", "MetricIndicator", "CustomSignalIndicator",
     "RSI", "RSISMA", "SMA", "EMA", "VolumeSMA", "BollingerBands",
-    "ATR", "MACD", "ADX", "Candle", "Price", "DonchianChannels",
+    "ATR", "MACD", "ADX", "Candle", "Volume", "Price", "DonchianChannels",
     "LiquidationPrice", "UnrealizedProfit", "MarketCap", "WebhookSignal"
 ]
