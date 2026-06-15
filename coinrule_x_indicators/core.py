@@ -59,6 +59,13 @@ class Indicator(ABC):
 class CandleIndicator(Indicator):
     """Abstract base class for candle-based indicators that calculate from OHLCV data."""
 
+    @classmethod
+    def _from_field(cls, field: str = "close") -> "CandleIndicator":
+        """Return a Candle indicator for a raw OHLCV field (AI codegen alias)."""
+        from coinrule_x_indicators.indicators.candle import Candle
+
+        return Candle(field=field)
+
     def __init__(self, **kwargs):
         """Initialize indicator with configuration arguments."""
         super().__init__(**kwargs)

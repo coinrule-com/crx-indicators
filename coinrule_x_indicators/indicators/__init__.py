@@ -1,4 +1,5 @@
 from .rsi import RSI
+from .mfi import MFI
 from .rsi_sma import RSISMA
 from .sma import SMA
 from .ema import EMA
@@ -16,7 +17,7 @@ from .market_cap import MarketCap
 from .webhook_signal import WebhookSignal
 
 __all__ = [
-    "RSI", "RSISMA", "SMA", "EMA", "VolumeSMA",
+    "RSI", "MFI", "RSISMA", "SMA", "EMA", "VolumeSMA",
     "BollingerBands", "ATR", "MACD", "ADX", "Candle", "Volume", "Price",
     "DonchianChannels", "LiquidationPrice", "UnrealizedProfit",
     "MarketCap", "WebhookSignal"

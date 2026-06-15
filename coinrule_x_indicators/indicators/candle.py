@@ -9,6 +9,10 @@ class Candle(CandleIndicator):
     Arguments:
         field (str): The candle field to return ('close', 'open', 'high', 'low', 'volume').
     """
+
+    @classmethod
+    def _from_field(cls, field: str = "close") -> "Candle":
+        return cls(field=field)
     
     def __init__(self, field: str = "close"):
         super().__init__(field=field)

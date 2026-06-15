@@ -8,6 +8,7 @@ def test_candle_indicator():
     # Test close field
     ind_close = Candle(field="close")
     assert ind_close.calculate(candles) == candles[-1].close
+    assert Candle._from_field("close").calculate(candles) == candles[-1].close
     
     # Test volume field
     ind_vol = Candle(field="volume")

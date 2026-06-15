@@ -31,6 +31,19 @@ indicators:
             default: 14
             label: "Smoothing Length"
             description: "Simple Moving Average period"
+  mfi:
+    latest: "1.0.0"
+    label: "MFI"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.mfi.MFI"
+        description: "Money Flow Index"
+        arguments:
+          period:
+            type: int
+            default: 14
+            label: "Length"
+            description: "Number of periods for MFI calculation"
   sma:
     latest: "1.0.0"
     label: "SMA"

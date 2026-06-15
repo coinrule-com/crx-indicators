@@ -93,7 +93,7 @@ Import concrete indicators from the package root:
 
 ```python
 from coinrule_x_indicators import (
-    RSI, RSISMA, SMA, EMA, MACD, VolumeSMA,
+    RSI, MFI, RSISMA, SMA, EMA, MACD, VolumeSMA,
     BollingerBands, ATR, ADX, DonchianChannels,
     Candle, Price,
     LiquidationPrice, UnrealizedProfit, MarketCap,
@@ -110,6 +110,7 @@ Base types (for custom indicators or typing): `CandleData`, `Indicator`, `Candle
 | **SMA** | CandleIndicator | `period=9` | `float` |
 | **EMA** | CandleIndicator | `period=9` | `float` |
 | **RSI** | CandleIndicator | `period=14` | `float` (0–100) |
+| **MFI** | CandleIndicator | `period=14` | `float` (0–100) |
 | **RSISMA** | CandleIndicator | `rsi_period=14`, `sma_period=14` | `float` (SMA of RSI) |
 | **MACD** | CandleIndicator | `fast=12`, `slow=26`, `signal=9` | `Dict`: `macd`, `signal`, `histogram` |
 | **ADX** | CandleIndicator | `period=14` | `Dict`: `adx`, `plus_di`, `minus_di` |
@@ -206,6 +207,29 @@ rsi = RSI(period=14)
 # Strategy example: Oversold bounce
 if rsi.value < 30:
     # Potential oversold reversal opportunity
+```
+
+---
+
+#### MFI (Money Flow Index)
+
+**Import:** `from coinrule_x_indicators import MFI`
+
+Volume-weighted momentum oscillator (similar interpretation to RSI).
+
+**Parameters:**
+
+- `period` (int, default=14): Lookback period
+
+**Returns:** `float` - MFI value between 0 and 100
+
+**Usage:**
+
+```python
+mfi = MFI(period=14)
+
+if mfi.value < 20:
+    # Potential oversold (money flowing out)
 ```
 
 ---
@@ -439,6 +463,7 @@ Provides access to raw candle OHLCV fields.
 
 ```python
 close = Candle(field="close")
+# or: close = Candle._from_field("close")
 high = Candle(field="high")
 low = Candle(field="low")
 volume = Candle(field="volume")

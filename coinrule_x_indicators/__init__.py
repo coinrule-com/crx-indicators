@@ -1,5 +1,6 @@
 from .core import CandleData, Indicator, CandleIndicator, MetricIndicator, CustomSignalIndicator
 from .indicators.rsi import RSI
+from .indicators.mfi import MFI
 from .indicators.rsi_sma import RSISMA
 from .indicators.sma import SMA
 from .indicators.ema import EMA
@@ -18,7 +19,7 @@ from .indicators.webhook_signal import WebhookSignal
 
 __all__ = [
     "CandleData", "Indicator", "CandleIndicator", "MetricIndicator", "CustomSignalIndicator",
-    "RSI", "RSISMA", "SMA", "EMA", "VolumeSMA", "BollingerBands",
+    "RSI", "MFI", "RSISMA", "SMA", "EMA", "VolumeSMA", "BollingerBands",
     "ATR", "MACD", "ADX", "Candle", "Volume", "Price", "DonchianChannels",
     "LiquidationPrice", "UnrealizedProfit", "MarketCap", "WebhookSignal"
 ]
