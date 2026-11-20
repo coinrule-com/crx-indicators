@@ -191,3 +191,74 @@ indicators:
       "1.0.0":
         class: "coinrule_x_indicators.indicators.webhook_signal.WebhookSignal"
         description: "Third-party Webhook Signal"
+  stochastic_rsi:
+    latest: "1.0.0"
+    label: "Stochastic RSI"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.stochastic_rsi.StochasticRSI"
+        description: "Stochastic RSI %K and %D"
+        arguments:
+          period:
+            type: int
+            default: 14
+            label: "Length"
+            description: "RSI length and stochastic lookback"
+  supertrend:
+    latest: "1.0.0"
+    label: "Supertrend"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.supertrend.SuperTrend"
+        description: "Supertrend band"
+        arguments:
+          period:
+            type: int
+            default: 10
+            label: "ATR Length"
+            description: "ATR lookback used for the bands"
+          multiplier:
+            type: float
+            default: 3.0
+            label: "Multiplier"
+            description: "ATR multiplier. Legacy rules use 3"
+  twap:
+    latest: "1.0.0"
+    label: "TWAP"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.twap.TWAP"
+        description: "Time-weighted average price over an anchor window"
+        arguments:
+          anchor_ms:
+            type: int
+            default: 3600000
+            label: "Anchor"
+            description: "Anchor window in milliseconds"
+  vwap:
+    latest: "1.0.0"
+    label: "VWAP"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.vwap.VWAP"
+        description: "Volume-weighted average price over an anchor window"
+        arguments:
+          anchor_ms:
+            type: int
+            default: 3600000
+            label: "Anchor"
+            description: "Anchor window in milliseconds"
+  vix:
+    latest: "1.0.0"
+    label: "VIX"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.vix.VIX"
+        description: "Latest market-wide VIX close"
+  btc_dominance:
+    latest: "1.0.0"
+    label: "BTC Dominance"
+    versions:
+      "1.0.0":
+        class: "coinrule_x_indicators.indicators.btc_dominance.BtcDominance"
+        description: "Latest market-wide BTC dominance close"

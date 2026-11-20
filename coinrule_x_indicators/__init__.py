@@ -16,10 +16,17 @@ from .indicators.liquidation_price import LiquidationPrice
 from .indicators.unrealized_profit import UnrealizedProfit
 from .indicators.market_cap import MarketCap
 from .indicators.webhook_signal import WebhookSignal
+from .indicators.stochastic_rsi import StochasticRSI
+from .indicators.supertrend import SuperTrend
+from .indicators.twap import TWAP
+from .indicators.vwap import VWAP
+from .indicators.vix import VIX
+from .indicators.btc_dominance import BtcDominance
 
 __all__ = [
     "CandleData", "Indicator", "CandleIndicator", "MetricIndicator", "CustomSignalIndicator",
     "RSI", "MFI", "RSISMA", "SMA", "EMA", "VolumeSMA", "BollingerBands",
     "ATR", "MACD", "ADX", "Candle", "Volume", "Price", "DonchianChannels",
-    "LiquidationPrice", "UnrealizedProfit", "MarketCap", "WebhookSignal"
+    "LiquidationPrice", "UnrealizedProfit", "MarketCap", "WebhookSignal",
+    "StochasticRSI", "SuperTrend", "TWAP", "VWAP", "VIX", "BtcDominance",
 ]
