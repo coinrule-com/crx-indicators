@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2026-11-20
+
+### Added
+
+- **Stochastic RSI**: `%K` and `%D` from the legacy RSI length, with a 3-period smooth on each line.
+- **Supertrend**: ATR band with the legacy multiplier of 3.
+- **TWAP**: average of OHLC/4 inside a legacy anchor window.
+- **VWAP**: volume-weighted typical price inside a legacy anchor window.
+- **VIX** and **BTC dominance**: market-wide closes supplied by a feed, in the same shape as market cap.
+
 ## [1.1.0] - 2026-04-30
 
 ### Added

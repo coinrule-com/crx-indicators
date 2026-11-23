@@ -1,6 +1,6 @@
 [project]
 name = "crx-indicators"
-version = "1.3.0"
+version = "1.4.0"
 description = "Standard indicators library for the Coinrule X execution platform"
 readme = "README.md"
 authors = [
